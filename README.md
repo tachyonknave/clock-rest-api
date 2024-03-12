@@ -1,20 +1,20 @@
-Python Flask API that talks to the NepClock32.
+## Python Flask API that talks to the NeoClock32.
 
 
 Can run in a docker container. 
 
-##Endpoints
+### Endpoints
 
 GET, POST, DELETE `/clock` <br/>
 POST `/clock/commitCommands` <br/>
 GET `/health` <br/>
 
 
+- 'func': fields.String,
+- 'param': fields.Integer,
+- 'showTime': fields.Integer,
+- 'RGB': fields.Integer
 ```
-# 'func': fields.String,
-# 'param': fields.Integer,
-# 'showTime': fields.Integer,
-# 'RGB': fields.Integer
 clock_data = {
          "func": "TWENTY_FOUR_CLOCK",
          "param": None,

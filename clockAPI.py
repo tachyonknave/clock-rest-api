@@ -2,17 +2,16 @@ import getopt
 import json
 import sys
 
+from clockClient import send_commands
+from clockCommand import ClockCommand
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api, Resource, reqparse
-
-from clockClient import send_commands
-from clockCommand import ClockCommand
 from health import Health
 
 app = Flask(__name__)
 api = Api(app)
-CORS(app)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 commands = []
 
@@ -30,15 +29,21 @@ class Clock(Resource):
 
         command = ClockCommand()
 
-        rgb_value = args['RGB'][2:]
+        if args['RGB'][0:2] == "0x":
+            rgb_value = args['RGB'][2:]
+        elif args['RGB'][0] == "#":
+            rgb_value = args['RGB'][1:]
+        else:
+            rgb_value = args['RGB']
+
         red_value, green_value, blue_value = tuple(int(rgb_value[i:i + 2], 16) for i in (0, 2, 4))
 
         command.build_command_bytes(args['func'],
                                     args['param'],
                                     args['showTime'],
-                                    red_value,
-                                    green_value,
-                                    blue_value)
+                                    red_value // 32,
+                                    green_value // 32,
+                                    blue_value // 32)
 
         commands.append(command)
         return command.to_dict(), 201
@@ -89,4 +94,4 @@ if __name__ == "__main__":
         elif o in ("-a", "--address"):
             URL = a
 
-    app.run(host='0.0.0.0', port='5000', debug=False)
+    app.run(host='0.0.0.0', port='5000', debug=True)
