@@ -1,0 +1,23 @@
+name: Automated Testing
+
+on:
+  push:
+    branches: [ "main" , "test"]
+
+jobs:
+
+  black-check:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Python and black
+        uses: python-actions/setup-python@v3
+        with:
+          python-version: '3.10'
+
+      - name: Install black
+        run: pip install black
+
+      - name: Run black
+        run: make black-check

@@ -22,7 +22,9 @@ class ClockCommand:
         self.blue = 0
         self.command_bytes = []
 
-    def build_command_bytes(self, function_name, parameter, show_time, red, green, blue):
+    def build_command_bytes(
+        self, function_name, parameter, show_time, red, green, blue
+    ):
         # From server code:
         #  FunctionCodeIndex = 0;
         #  DutyCycleIndex = 1;
@@ -44,15 +46,24 @@ class ClockCommand:
 
         function = FuncEnum[function_name]
 
-        command_ints = [function.value,
-                        int(show_time),
-                        int(parameter) >> 8, int(parameter) & 0xFF,
-                        int(red), int(green), int(blue)]
+        command_ints = [
+            function.value,
+            int(show_time),
+            int(parameter) >> 8,
+            int(parameter) & 0xFF,
+            int(red),
+            int(green),
+            int(blue),
+        ]
 
         self.command_bytes = bytes(command_ints)
 
     def to_dict(self):
         rgb_string = "0x{:02x}{:02x}{:02x}"
 
-        return {'func': self.function, 'param': self.parameter, 'showTime': self.show_time,
-                'RGB': rgb_string.format(self.red, self.green, self.blue)}
+        return {
+            "func": self.function,
+            "param": self.parameter,
+            "showTime": self.show_time,
+            "RGB": rgb_string.format(self.red, self.green, self.blue),
+        }
