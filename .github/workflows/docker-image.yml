@@ -2,9 +2,11 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" , "test""]
+    branches: [ "main" , "test" ]
+
 env:
   IMAGE_NAME: clock-rest-api
+
 jobs:
 
   build:
