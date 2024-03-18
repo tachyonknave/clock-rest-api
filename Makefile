@@ -10,3 +10,6 @@ black:
 
 black-check:
 	$(VENV)/bin/python -m black --check .
+
+unit:
+	$(VENV)/bin/python -m pytest .
