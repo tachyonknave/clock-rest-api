@@ -23,7 +23,7 @@ jobs:
         run:  python3 -m venv venv
       - run: source ./venv/bin/activate
       - name: Install Required Packages
-        run: make dependenciess
+        run: make dependencies
 
       # Run black as a checker
       - name: Run black
