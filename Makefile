@@ -1,6 +1,9 @@
 VENV := ./venv
 
-.PHONY: black
+.PHONY: dependencies black black-checks
+
+dependencies:
+	$(VENV)/bin/pip install -r requirements.txt
 
 black:
 	$(VENV)/bin/python -m black .
