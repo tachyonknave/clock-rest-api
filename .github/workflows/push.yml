@@ -18,9 +18,12 @@ jobs:
         with:
          python-version: '3.10'
 
-      # Install the black formatter
-      - name: Install black
-        run: pip install black
+      # Setup the venv
+      - name: Setup venv
+        run:  python3 -m venv venv
+      - run: source ./venv/bin/activate
+      - name: Install Required Packages
+        run: pip install -r requirements.txt
 
       # Run black as a checker
       - name: Run black
