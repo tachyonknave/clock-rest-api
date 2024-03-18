@@ -1,5 +1,5 @@
 aniso8601==8.0.0
-black~=23.12.1
+black~=23.3.0
 click~=8.1.7
 Flask~=2.2.5
 Flask-RESTful~=0.3.10
