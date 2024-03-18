@@ -18,4 +18,4 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}:$(date +%s)
       - name: Push image to GHCR
-        run: docker push ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest
+        run: docker push ghcr.io/tachyonknave/${{ env.IMAGE_NAME }}:latest
