@@ -1,15 +1,35 @@
-VENV := ./venv
+# Define the virtual environment directory and executables
+VENV := ./.venv
+PYTHON := $(VENV)/bin/python
+PIP := $(VENV)/bin/pip
+PYTEST := $(VENV)/bin/pytest
 
-.PHONY: dependencies black black-checks
+.PHONY: venv dependencies black black-check unit
 
+
+# Install dependencies into the virtual environment
 dependencies:
-	$(VENV)/bin/pip install -r requirements.txt
+	$(PIP) install -r requirements.txt
 
+# Run black using the venv's python
 black:
-	$(VENV)/bin/python -m black .
+	$(PYTHON) -m black .
 
 black-check:
-	$(VENV)/bin/python -m black --check .
+	$(PYTHON) -m black --check .
 
+# Run pytest from the venv
 unit:
-	$(VENV)/bin/python -m pytest .
+	$(PYTEST) ./tests/unit/
+
+docker-build:
+	docker build -t clock_api -f ./docker/Dockerfile .
+
+docker-start:
+	docker run --rm -d -p 5000:5000 --name clock-api -e CLOCK_URL=$CLOCK_URL clock_api
+
+docker-stop:
+	docker stop clock-api
+
+docker-rm:
+	docker rm clock-api
