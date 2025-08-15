@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: clock-rest-api
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
 
