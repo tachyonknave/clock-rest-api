@@ -1,20 +1,18 @@
-Python Flask API that talks to the NepClock32.
+# Python Flask API that talks to the NeoClock32.
 
 
-Can run in a docker container. 
-
-##Endpoints
+### Endpoints
 
 GET, POST, DELETE `/clock` <br/>
 POST `/clock/commitCommands` <br/>
 GET `/health` <br/>
 
 
+- 'func': fields.String,
+- 'param': fields.Integer,
+- 'showTime': fields.Integer,
+- 'RGB': fields.Integer
 ```
-# 'func': fields.String,
-# 'param': fields.Integer,
-# 'showTime': fields.Integer,
-# 'RGB': fields.Integer
 clock_data = {
          "func": "TWENTY_FOUR_CLOCK",
          "param": None,
@@ -27,3 +25,9 @@ to the clock. A GET will return the current buffer. A DELETE will clear the
 buffer. 
 
 A GET health will return an OK if the service is running. 
+
+### Docker
+
+`docker build -t clock_api .`
+`docker run --rm -d -p 5000:5000 --name clock-api -e CLOCK_URL=http://192.168.1.168 clock_api`
+`curl http://127.0.0.1:5000/health`
