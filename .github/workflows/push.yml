@@ -2,7 +2,7 @@ name: Automated Testing
 
 on:
   push:
-    branches: [ "main" , "test"]
+    branches: [ "main" , "behave"]
 
 jobs:
   black-check:
@@ -10,7 +10,7 @@ jobs:
     steps:
       # Get Repo
       - uses: actions/checkout@v4
-      # Setup python 3.7
+      # Setup python 3.11
       - uses: actions/setup-python@v5
         with:
          python-version: '3.11'

@@ -22,6 +22,9 @@ black-check:
 unit:
 	$(PYTEST) ./tests/unit/
 
+integration:
+	behave tests/functional/features
+
 docker-build:
 	$(DOCKER) build -t clock_api -f ./docker/Dockerfile .
 
