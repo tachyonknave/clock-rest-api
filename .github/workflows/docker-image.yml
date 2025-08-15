@@ -39,5 +39,4 @@ jobs:
            push: true
            tags: ${{ steps.meta.outputs.tags }}
            labels: ${{ steps.meta.outputs.labels }}
-      - name: Push image to GHCR
-        run: docker push ghcr.io/tachyonknave/${{ env.IMAGE_NAME }}:latest
+
