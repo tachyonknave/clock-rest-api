@@ -1,8 +1,8 @@
-# Define the virtual environment directory and executables
-VENV := ./.venv
-PYTHON := $(VENV)/bin/python
-PIP := $(VENV)/bin/pip
-PYTEST := $(VENV)/bin/pytest
+# Define the  executables
+PYTHON := python
+PIP := pip
+PYTEST := pytest
+DOCKER := docker
 
 .PHONY: venv dependencies black black-check unit
 
@@ -23,13 +23,13 @@ unit:
 	$(PYTEST) ./tests/unit/
 
 docker-build:
-	docker build -t clock_api -f ./docker/Dockerfile .
+	$(DOCKER) build -t clock_api -f ./docker/Dockerfile .
 
 docker-start:
-	docker run --rm -d -p 5000:5000 --name clock-api -e CLOCK_URL=$CLOCK_URL clock_api
+	$(DOCKER) run --rm -d -p 5000:5000 --name clock-api -e CLOCK_URL=$CLOCK_URL clock_api
 
 docker-stop:
-	docker stop clock-api
+	$(DOCKER) stop clock-api
 
 docker-rm:
-	docker rm clock-api
+	$(DOCKER) rm clock-api
