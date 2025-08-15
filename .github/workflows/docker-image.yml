@@ -39,7 +39,5 @@ jobs:
            push: true
            tags: ${{ steps.meta.outputs.tags }}
            labels: ${{ steps.meta.outputs.labels }}
-      - name: Tag this image with latest tag
-        run: docker tag ${{ env.IMAGE_NAME }}:${{ steps.timestamp.outputs.timestamp }} ghcr.io/tachyonknave/${{ env.IMAGE_NAME }}:latest
       - name: Push image to GHCR
         run: docker push ghcr.io/tachyonknave/${{ env.IMAGE_NAME }}:latest
