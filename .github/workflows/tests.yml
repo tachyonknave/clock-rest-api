@@ -1,10 +1,11 @@
-name: Tests
+name: Tests 
 
 on:
-  push:
-    branches: [ "main" , "behave" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: ["Docker Image CI"] # This MUST match the 'name' in docker-image.yml
+    types:
+      - completed
+
 
 env:
   REGISTRY: ghcr.io
@@ -12,8 +13,27 @@ env:
   CLOCK_URL: http://localhost:5000/
 
 
+
 jobs:
+  unit-tests:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      # Get Repo
+      - uses: actions/checkout@v4
+      # Setup python 3.11
+      - uses: actions/setup-python@v5
+        with:
+         python-version: '3.11'
+
+      - name: Install dependencies
+        run: make dependencies
+
+      - name: Run unit tests
+        run:  make unit
+
   behave-tests:
+    needs: unit-tests
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +46,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: make dependencies
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3

@@ -1,8 +1,9 @@
-name: Units Tests / Formatting
+name: Formatting
 
 on:
-  push:
-    branches: [ "main" , "behave"]
+  pull_request:
+    branches: [ "main" ]
+
 
 jobs:
   black-check:
@@ -24,22 +25,3 @@ jobs:
       # Run black as a checker
       - name: Run black
         run: make black-check
-  unit-tests:
-    runs-on: ubuntu-latest
-    steps:
-      # Get Repo
-      - uses: actions/checkout@v4
-      # Setup python 3.11
-      - uses: actions/setup-python@v5
-        with:
-         python-version: '3.11'
-      # Set up the venv
-      - name: Setup venv
-        run:  python3 -m venv venv
-      - run: source ./venv/bin/activate
-      - name: Install Required Packages
-        run: make dependencies
-
-      # Run unit tests
-      - name: Run Unit Test
-        run: make unit
