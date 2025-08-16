@@ -1,6 +1,8 @@
 name: Tests 
 
 on:
+  push:
+  pull_request:
   workflow_run:
     workflows: ["Docker Image CI"] # This MUST match the 'name' in docker-image.yml
     types:
