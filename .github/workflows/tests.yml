@@ -1,10 +1,10 @@
-name: Behave Tests in Docker (Prebuilt Image)
+name: Tests
 
 on:
   push:
     branches: [ "main" , "behave" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 env:
   REGISTRY: ghcr.io
@@ -24,8 +24,8 @@ jobs:
            password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull prebuilt Docker image
-        run: docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        run: docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
 
       - name: Run Behave tests in Docker container
         run: |
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest make integration
+          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} make integration
