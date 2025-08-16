@@ -2,6 +2,7 @@ name: Dev Pipeline
 
 on:
   push:
+    branches: [ "main" , "behave"]
   pull_request:
     branches: [ "main" ]
 
