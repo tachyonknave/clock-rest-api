@@ -36,7 +36,7 @@ jobs:
         run: |
           echo "### Unit Test Results" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          cat ./test/results/unit.md >> $GITHUB_STEP_SUMMARY
+          cat ./tests/results/unit.md >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           if [[ ${{ steps.tests.outcome }} == 'failure' ]]; then
             exit 1
