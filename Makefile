@@ -20,10 +20,11 @@ black-check:
 
 # Run pytest from the venv
 unit:
-	$(PYTEST) ./tests/unit/
+	mkdir -p ./tests/results
+	$(PYTEST) --md-report --md-report-output=./tests/results/unit.md ./tests/unit/
 
 integration:
-	behave tests/functional/features
+	behave ./tests/functional/features
 
 docker-build:
 	$(DOCKER) build -t clock_api -f ./docker/Dockerfile .

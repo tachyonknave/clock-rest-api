@@ -26,6 +26,7 @@ pathspec==0.12.1
 platformdirs==4.3.8
 pluggy==1.6.0
 pytest==7.4.4
+pytest-md-report==0.7.0
 pytz==2025.2
 requests==2.32.4
 six==1.17.0

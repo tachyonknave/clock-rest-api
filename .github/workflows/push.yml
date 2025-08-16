@@ -28,7 +28,19 @@ jobs:
         run: make dependencies
 
       - name: Run unit tests
-        run:  make unit
+        id: tests
+        run:  make unit > unit_test_output.txt || true
+
+      - name: Add test results to job summary
+        if: always()
+        run: |
+          echo "### Unit Test Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat ./test/results/unit.md >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          if [[ ${{ steps.tests.outcome }} == 'failure' ]]; then
+            exit 1
+          fi
 
   build:
     needs: unit-tests
@@ -108,7 +120,19 @@ jobs:
           exit 1
 
       - name: Run tests
-        run: make integration
+        id: tests
+        run: make integration > behave_output.txt || true
+
+      - name: Add test results to job summary
+        if: always()
+        run: |
+          echo "### Behave Test Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat behave_output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          if [[ ${{ steps.tests.outcome }} == 'failure' ]]; then
+            exit 1
+          fi
 
       - name: Stop container
         if: always()
