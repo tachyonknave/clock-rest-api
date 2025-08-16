@@ -1,4 +1,4 @@
-name: Automated Testing
+name: Units Tests / Formatting
 
 on:
   push:
