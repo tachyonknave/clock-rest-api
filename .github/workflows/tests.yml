@@ -27,6 +27,12 @@ jobs:
       - name: Pull prebuilt Docker image
         run: docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
 
-      - name: Run Behave tests in Docker container
+      - name: Run Docker container
         run: |
-          docker run --rm -e CLOCK_URL=${{ env.CLOCK_URL }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} make integration
+          docker run --rm --name test-container -e CLOCK_URL=${{ env.CLOCK_URL }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} make integration
+      - name: Run tests
+        run: |
+          docker exec --rm test-container  make integration
+      - name: Stop
+        run: |
+          docker stop test-container
