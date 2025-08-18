@@ -1,29 +1,19 @@
-name: Automated Testing
+name: Dev Pipeline
 
 on:
   push:
-    branches: [ "main" , "test"]
+  pull_request:
+    branches: [ "main" ]
+
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  CLOCK_URL: http://localhost:5000/
+
+
 
 jobs:
-  black-check:
-    runs-on: ubuntu-latest
-    steps:
-      # Get Repo
-      - uses: actions/checkout@v4
-      # Setup python 3.7
-      - uses: actions/setup-python@v5
-        with:
-         python-version: '3.11'
-      # Set up the venv
-      - name: Setup venv
-        run:  python3 -m venv venv
-      - run: source ./venv/bin/activate
-      - name: Install Required Packages
-        run: make dependencies
-
-      # Run black as a checker
-      - name: Run black
-        run: make black-check
   unit-tests:
     runs-on: ubuntu-latest
     steps:
@@ -33,13 +23,117 @@ jobs:
       - uses: actions/setup-python@v5
         with:
          python-version: '3.11'
-      # Set up the venv
-      - name: Setup venv
-        run:  python3 -m venv venv
-      - run: source ./venv/bin/activate
-      - name: Install Required Packages
+
+      - name: Install dependencies
         run: make dependencies
 
-      # Run unit tests
-      - name: Run Unit Test
-        run: make unit
+      - name: Run unit tests
+        id: tests
+        run:  make unit > unit_test_output.txt || true
+
+      - name: Add test results to job summary
+        if: always()
+        run: |
+          echo "### Unit Test Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat ./tests/results/unit.md >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          if [[ ${{ steps.tests.outcome }} == 'failure' ]]; then
+            exit 1
+          fi
+
+  build:
+    needs: unit-tests
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+           registry: ${{ env.REGISTRY }}
+           username: ${{ github.actor }}
+           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Build the Docker image
+        uses: docker/build-push-action@v6
+        with:
+           context: .
+           file: ./docker/Dockerfile
+           push: true
+           tags: ${{ steps.meta.outputs.tags }}
+           labels: ${{ steps.meta.outputs.labels }}
+
+
+  behave-tests:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: make dependencies
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+           registry: ${{ env.REGISTRY }}
+           username: ${{ github.actor }}
+           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull prebuilt Docker image
+        run: docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+
+      - name: Run Docker container in detached mode
+        run: >
+          docker run -d --rm -p 5000:5000 --name test-container 
+          -e CLOCK_URL=${{ env.CLOCK_URL }} 
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+
+      - name: Wait for service to be ready
+        run: |
+          echo "Waiting for container to be ready..."
+          for i in {1..15}; do
+            if curl -s --fail http://localhost:5000/health; then
+              echo "Container is ready!"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Container did not become ready in time."
+          exit 1
+
+      - name: Run tests
+        id: tests
+        run: make integration > behave_output.txt || true
+
+      - name: Add test results to job summary
+        if: always()
+        run: |
+          echo "### Behave Test Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat behave_output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          if [[ ${{ steps.tests.outcome }} == 'failure' ]]; then
+            exit 1
+          fi
+
+      - name: Stop container
+        if: always()
+        run: docker stop test-container
