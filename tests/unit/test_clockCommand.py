@@ -1,4 +1,4 @@
-from src.clockCommand import ClockCommand
+from src.models.clockCommand import ClockCommand
 
 
 def test_clockCommand():
