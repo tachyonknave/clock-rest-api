@@ -1,7 +1,6 @@
 from behave.runner import Context
 
 
-
 def before_all(context: Context):
     context.base_url = "http://localhost:5001/"
 

@@ -1,5 +1,6 @@
 import requests
 
+
 class ClockClient:
 
     def __init__(self, web_address):

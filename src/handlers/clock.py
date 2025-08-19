@@ -1,6 +1,6 @@
-
 from models.clockCommand import ClockCommand
-from flask_restful import  Resource
+from flask_restful import Resource
+
 
 class Clock(Resource):
     def __init__(self):
@@ -42,6 +42,3 @@ class Clock(Resource):
     def delete(self):
         self.commands.clear()
         return 202
-
-
-
