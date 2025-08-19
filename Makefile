@@ -30,7 +30,7 @@ docker-build:
 	$(DOCKER) build -t clock_api -f ./docker/Dockerfile .
 
 docker-start:
-	$(DOCKER) run --rm -d -p 5000:5000 --name clock-api -e CLOCK_URL=$CLOCK_URL clock_api
+	$(DOCKER) run --rm -d -p 5001:5002 --name clock-api -e CLOCK_URL=$CLOCK_URL clock_api
 
 docker-stop:
 	$(DOCKER) stop clock-api
