@@ -18,4 +18,3 @@ def when_the_health_endpoint_is_accessed(context: Context):
 def then_we_get_an_okay_response(context: Context):
     print(context.response_text)
     assert context.response_text == '"OK"', 'Expecting "OK"'
-
