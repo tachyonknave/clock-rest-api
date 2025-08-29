@@ -1,6 +1,7 @@
 import requests
 from icecream import ic
 
+
 class ClockClient:
 
     def __init__(self, web_address):

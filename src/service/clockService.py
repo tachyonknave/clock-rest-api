@@ -3,6 +3,7 @@ from models.clockCommand import ClockCommand
 
 from icecream import ic
 
+
 class ClockService:
 
     def __init__(self, URL):
@@ -20,7 +21,7 @@ class ClockService:
             rgb_value = rgb
 
         red_value, green_value, blue_value = tuple(
-            int(rgb_value[i: i + 2], 16) for i in (0, 2, 4)
+            int(rgb_value[i : i + 2], 16) for i in (0, 2, 4)
         )
 
         ic(show_time, red_value, green_value, blue_value)
@@ -28,7 +29,7 @@ class ClockService:
         command.build_command_bytes(
             function,
             param,
-            show_time // 100, # convert ms to deci-seconds
+            show_time // 100,  # convert ms to deci-seconds
             red_value // 32,
             green_value // 32,
             blue_value // 32,

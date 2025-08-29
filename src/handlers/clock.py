@@ -5,32 +5,24 @@ from icecream import ic
 
 import services
 
+
 class Clock(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument(
-            "func", type=str, required=True
-        )
-        self.parser.add_argument(
-            "param", type=int, required=False, default=0
-        )
-        self.parser.add_argument(
-            "showTime", type=int, required=True
-        )
-        self.parser.add_argument(
-            "RGB", type=str, required=True
-        )
-        super(Clock,self).__init__()
+        self.parser.add_argument("func", type=str, required=True)
+        self.parser.add_argument("param", type=int, required=False, default=0)
+        self.parser.add_argument("showTime", type=int, required=True)
+        self.parser.add_argument("RGB", type=str, required=True)
+        super(Clock, self).__init__()
+
     def post(self):
 
         args = self.parser.parse_args()
 
-        ic(args['showTime'])
+        ic(args["showTime"])
         command_dict = services.clock_service.add_command(
-            args['func'],
-            args['param'],
-            args['showTime'],
-            args['RGB'])
+            args["func"], args["param"], args["showTime"], args["RGB"]
+        )
 
         return command_dict, HTTPStatus.CREATED
 

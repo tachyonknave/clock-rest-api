@@ -30,7 +30,7 @@ def when_a_test_command_is_sent(context: Context):
     response = requests.post(
         url=context.base_url + context.clock_endpoint,
         headers={"Content-Type": "application/json"},
-        data=json.dumps(test_data)
+        data=json.dumps(test_data),
     )
     print(response.text)
     context.response_code = response.status_code
@@ -38,4 +38,6 @@ def when_a_test_command_is_sent(context: Context):
 
 @then("we get a {response_code} response")
 def then_we_get_an_okay_response(context: Context, response_code: int):
-    assert context.response_code == int(response_code), f"Expecting {response_code}, got {context.response_code}"
+    assert context.response_code == int(
+        response_code
+    ), f"Expecting {response_code}, got {context.response_code}"
