@@ -1,44 +1,45 @@
-from models.clockCommand import ClockCommand
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
+from http import HTTPStatus
 
+from icecream import ic
+
+import services
 
 class Clock(Resource):
     def __init__(self):
-        self.commands = []
-
-    def post(self, args):
-
-        command = ClockCommand()
-
-        if args["RGB"][0:2] == "0x":
-            rgb_value = args["RGB"][2:]
-        elif args["RGB"][0] == "#":
-            rgb_value = args["RGB"][1:]
-        else:
-            rgb_value = args["RGB"]
-
-        red_value, green_value, blue_value = tuple(
-            int(rgb_value[i : i + 2], 16) for i in (0, 2, 4)
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument(
+            "func", type=str, required=True
         )
-
-        command.build_command_bytes(
-            args["func"],
-            args["param"],
-            args["showTime"],
-            red_value // 32,
-            green_value // 32,
-            blue_value // 32,
+        self.parser.add_argument(
+            "param", type=int, required=False, default=0
         )
+        self.parser.add_argument(
+            "showTime", type=int, required=True
+        )
+        self.parser.add_argument(
+            "RGB", type=str, required=True
+        )
+        super(Clock,self).__init__()
+    def post(self):
 
-        self.commands.append(command)
-        return command.to_dict(), 201
+        args = self.parser.parse_args()
+
+        ic(args['showTime'])
+        command_dict = services.clock_service.add_command(
+            args['func'],
+            args['param'],
+            args['showTime'],
+            args['RGB'])
+
+        return command_dict, HTTPStatus.CREATED
 
     def get(self):
         json_list = []
-        for cmd in self.commands:
+        for cmd in services.clock_service.get_commands():
             json_list.append(cmd.to_dict())
-        return json_list, 200
+        return json_list, HTTPStatus.OK
 
     def delete(self):
-        self.commands.clear()
-        return 202
+        services.clock_service.clear_commands()
+        return HTTPStatus.ACCEPTED

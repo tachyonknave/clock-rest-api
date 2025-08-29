@@ -29,5 +29,5 @@ A GET health will return an OK if the service is running.
 ### Docker
 
 `docker build -t clock_api .`
-`docker run --rm -d -p 5000:5000 --name clock-api -e CLOCK_URL=http://192.168.1.168 clock_api`
-`curl http://127.0.0.1:5000/health`
+`docker run --rm -d -p 5001:5001 --name clock-api -e CLOCK_URL=http://192.168.1.168 clock_api`
+`curl http://127.0.0.1:5001/health`

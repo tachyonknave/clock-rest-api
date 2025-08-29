@@ -21,7 +21,7 @@ black-check:
 # Run pytest from the venv
 unit:
 	mkdir -p ./tests/results
-	$(PYTEST) --md-report --md-report-output=./tests/results/unit.md ./tests/unit/
+	$(PYTEST) --md ./tests/results/unit.md ./tests/unit/
 
 integration:
 	behave ./tests/functional/features
@@ -30,7 +30,7 @@ docker-build:
 	$(DOCKER) build -t clock_api -f ./docker/Dockerfile .
 
 docker-start:
-	$(DOCKER) run --rm -d -p 5001:5002 --name clock-api -e CLOCK_URL=$CLOCK_URL clock_api
+	$(DOCKER) run --rm -d -p 5001:5001 --name clock-api -e CLOCK_URL='http://192.168.1.168' clock_api
 
 docker-stop:
 	$(DOCKER) stop clock-api
